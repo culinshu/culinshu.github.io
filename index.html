@@ -1,0 +1,991 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="css/filter.css">
+<link rel="stylesheet" href="css/nouislider.min.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="js/tailDT.js"></script>
+<script src="js/nouislider.min.js"></script>
+<script src="js/wNumb.js"></script>
+        <script src="data/countyname__1.js"></script>
+        <script src="data/_2.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[24.120513150551382,120.60731447919186],[24.180937549794105,120.73324376509677]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_GoogleSatellite_0');
+        map.getPane('pane_GoogleSatellite_0').style.zIndex = 400;
+        var layer_GoogleSatellite_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleSatellite_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.google.at/permissions/geoguidelines/attr-guide.html">Map data ©2015 Google</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 20
+        });
+        layer_GoogleSatellite_0;
+        map.addLayer(layer_GoogleSatellite_0);
+        function pop_countyname__1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2"><strong>fid</strong><br />' + (feature.properties['fid'] !== null ? autolinker.link(feature.properties['fid'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TOWNID'] !== null ? autolinker.link(feature.properties['TOWNID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TOWNCODE'] !== null ? autolinker.link(feature.properties['TOWNCODE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['COUNTYNAME'] !== null ? autolinker.link(feature.properties['COUNTYNAME'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TOWNNAME'] !== null ? autolinker.link(feature.properties['TOWNNAME'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TOWNENG'] !== null ? autolinker.link(feature.properties['TOWNENG'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['COUNTYID'] !== null ? autolinker.link(feature.properties['COUNTYID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['COUNTYCODE'] !== null ? autolinker.link(feature.properties['COUNTYCODE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_countyname__1_0() {
+            return {
+                pane: 'pane_countyname__1',
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(152,125,183,0.0)',
+                interactive: false,
+            }
+        }
+        map.createPane('pane_countyname__1');
+        map.getPane('pane_countyname__1').style.zIndex = 401;
+        map.getPane('pane_countyname__1').style['mix-blend-mode'] = 'normal';
+        var layer_countyname__1 = new L.geoJson(json_countyname__1, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_countyname__1',
+            layerName: 'layer_countyname__1',
+            pane: 'pane_countyname__1',
+            onEachFeature: pop_countyname__1,
+            style: style_countyname__1_0,
+        });
+        bounds_group.addLayer(layer_countyname__1);
+        map.addLayer(layer_countyname__1);
+        function pop__2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">fid</th>\
+                        <td>' + (feature.properties['fid'] !== null ? autolinker.link(feature.properties['fid'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">ID</th>\
+                        <td>' + (feature.properties['ID'] !== null ? autolinker.link(feature.properties['ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">圖名代碼</th>\
+                        <td>' + (feature.properties['圖名代碼'] !== null ? autolinker.link(feature.properties['圖名代碼'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>路名</strong><br />' + (feature.properties['路名'] !== null ? autolinker.link(feature.properties['路名'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">地區</th>\
+                        <td>' + (feature.properties['地區'] !== null ? autolinker.link(feature.properties['地區'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">巷</th>\
+                        <td>' + (feature.properties['巷'] !== null ? autolinker.link(feature.properties['巷'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">弄</th>\
+                        <td>' + (feature.properties['弄'] !== null ? autolinker.link(feature.properties['弄'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">單雙向</th>\
+                        <td>' + (feature.properties['單雙向'] !== null ? autolinker.link(feature.properties['單雙向'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">左向車道數</th>\
+                        <td>' + (feature.properties['左向車道數'] !== null ? autolinker.link(feature.properties['左向車道數'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">右向車道數</th>\
+                        <td>' + (feature.properties['右向車道數'] !== null ? autolinker.link(feature.properties['右向車道數'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">速限</th>\
+                        <td>' + (feature.properties['速限'] !== null ? autolinker.link(feature.properties['速限'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">路寬</th>\
+                        <td>' + (feature.properties['路寬'] !== null ? autolinker.link(feature.properties['路寬'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">區分級別</th>\
+                        <td>' + (feature.properties['區分級別'] !== null ? autolinker.link(feature.properties['區分級別'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">更新年度</th>\
+                        <td>' + (feature.properties['更新年度'] !== null ? autolinker.link(feature.properties['更新年度'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">備註</th>\
+                        <td>' + (feature.properties['備註'] !== null ? autolinker.link(feature.properties['備註'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">路長</th>\
+                        <td>' + (feature.properties['路長'] !== null ? autolinker.link(feature.properties['路長'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">StartX坐標</th>\
+                        <td>' + (feature.properties['StartX坐標'] !== null ? autolinker.link(feature.properties['StartX坐標'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">StartY坐標</th>\
+                        <td>' + (feature.properties['StartY坐標'] !== null ? autolinker.link(feature.properties['StartY坐標'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">EndX坐標</th>\
+                        <td>' + (feature.properties['EndX坐標'] !== null ? autolinker.link(feature.properties['EndX坐標'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">EndY坐標</th>\
+                        <td>' + (feature.properties['EndY坐標'] !== null ? autolinker.link(feature.properties['EndY坐標'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">fid_count</th>\
+                        <td>' + (feature.properties['fid_count'] !== null ? autolinker.link(feature.properties['fid_count'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Traffic_density</th>\
+                        <td>' + (feature.properties['Traffic_density'] !== null ? autolinker.link(feature.properties['Traffic_density'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style__2_0(feature) {
+            if (feature.properties['fid_count'] >= 21.000000 && feature.properties['fid_count'] <= 26.000000 ) {
+                return {
+                pane: 'pane__2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,245,240,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['fid_count'] >= 26.000000 && feature.properties['fid_count'] <= 34.000000 ) {
+                return {
+                pane: 'pane__2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,204,184,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['fid_count'] >= 34.000000 && feature.properties['fid_count'] <= 45.000000 ) {
+                return {
+                pane: 'pane__2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(252,143,111,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['fid_count'] >= 45.000000 && feature.properties['fid_count'] <= 60.000000 ) {
+                return {
+                pane: 'pane__2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(244,77,56,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['fid_count'] >= 60.000000 && feature.properties['fid_count'] <= 85.000000 ) {
+                return {
+                pane: 'pane__2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(197,22,28,1.0)',
+                interactive: true,
+            }
+            }
+            if (feature.properties['fid_count'] >= 85.000000 && feature.properties['fid_count'] <= 154.000000 ) {
+                return {
+                pane: 'pane__2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(103,0,13,1.0)',
+                interactive: true,
+            }
+            }
+        }
+        map.createPane('pane__2');
+        map.getPane('pane__2').style.zIndex = 402;
+        map.getPane('pane__2').style['mix-blend-mode'] = 'normal';
+        var layer__2 = new L.geoJson(json__2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json__2',
+            layerName: 'layer__2',
+            pane: 'pane__2',
+            onEachFeature: pop__2,
+            style: style__2_0,
+        });
+        bounds_group.addLayer(layer__2);
+        map.addLayer(layer__2);
+        setBounds();
+        map.addControl(new L.Control.Search({
+            layer: layer__2,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: '路名'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"fid_count": "int","Traffic_density": "real","路名": "str"};
+        function filterFunc() {
+          map.eachLayer(function(lyr){
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            features = this[lyr["options"]["dataVar"]].features.slice(0);
+            try{
+              for (key in Filters){
+                keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + keyS).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+          }
+          })
+        }
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_fid_count = document.createElement("div");
+            div_fid_count.id = "div_fid_count";
+            div_fid_count.className = "slider";
+            document.getElementById("menu").appendChild(div_fid_count);
+            var lab_fid_count = document.createElement('div');
+            lab_fid_count.innerHTML  = 'fid_count: <span id="val_fid_count"></span>';
+            lab_fid_count.className = 'filterlabel';
+            document.getElementById("menu").appendChild(lab_fid_count);
+            var reset_fid_count = document.createElement('div');
+            reset_fid_count.innerHTML = 'clear filter';
+            reset_fid_count.className = 'filterlabel';
+            lab_fid_count.className = 'filterlabel';
+            reset_fid_count.onclick = function() {
+                sel_fid_count.noUiSlider.reset();
+            };
+            document.getElementById("menu").appendChild(reset_fid_count);
+            var sel_fid_count = document.getElementById('div_fid_count');
+            noUiSlider.create(sel_fid_count, {
+                connect: true,
+                start: [21, 154],
+                step: 1,
+                format: wNumb({
+                    decimals: 0,
+                    }),
+                range: {
+                min: 21,
+                max: 154
+                }
+            });
+            sel_fid_count.noUiSlider.on('update', function (values) {
+            filterVals =[];
+            for (value in values){
+            filterVals.push(parseInt(value))
+            }
+            val_fid_count = document.getElementById('val_fid_count');
+            val_fid_count.innerHTML = values.join(' - ');
+                filterFunc()
+            });
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_Traffic_density = document.createElement("div");
+            div_Traffic_density.id = "div_Traffic_density";
+            div_Traffic_density.className = "slider";
+            document.getElementById("menu").appendChild(div_Traffic_density);
+            var lab_Traffic_density = document.createElement('div');
+            lab_Traffic_density.innerHTML  = 'Traffic_density: <span id="val_Traffic_density"></span>';
+            lab_Traffic_density.className = 'filterlabel';
+            document.getElementById("menu").appendChild(lab_Traffic_density);
+            var reset_Traffic_density = document.createElement('div');
+            reset_Traffic_density.innerHTML = 'clear filter';
+            reset_Traffic_density.className = 'filterlabel';
+            lab_Traffic_density.className = 'filterlabel';
+            reset_Traffic_density.onclick = function() {
+                sel_Traffic_density.noUiSlider.reset();
+            };
+            document.getElementById("menu").appendChild(reset_Traffic_density);
+            var sel_Traffic_density = document.getElementById('div_Traffic_density');
+            noUiSlider.create(sel_Traffic_density, {
+                connect: true,
+                start: [0.0003377704932341559, 0.07787770507252585],
+                range: {
+                min: 0.0003377704932341559,
+                max: 0.07787770507252585
+                }
+            });
+            sel_Traffic_density.noUiSlider.on('update', function (values) {
+            val_Traffic_density = document.getElementById('val_Traffic_density');
+            val_Traffic_density.innerHTML = values.join(' - ');
+                filterFunc()
+            });
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_ = document.createElement('div');
+            div_.id = "div_";
+            div_.className= "filterselect";
+            document.getElementById("menu").appendChild(div_);
+            sel_ = document.createElement('select');
+            sel_.multiple = true;
+            sel_.size = 10;
+            sel_.id = "sel_";
+            var _options_str = "<option value='' unselected></option>";
+            sel_.onchange = function(){filterFunc()};
+            _options_str  += '<option value="NULL">NULL</option>';
+            _options_str  += '<option value="一中街">一中街</option>';
+            _options_str  += '<option value="三民西路">三民西路</option>';
+            _options_str  += '<option value="三民路一段">三民路一段</option>';
+            _options_str  += '<option value="三民路三段">三民路三段</option>';
+            _options_str  += '<option value="三民路二段">三民路二段</option>';
+            _options_str  += '<option value="上安路">上安路</option>';
+            _options_str  += '<option value="上石路">上石路</option>';
+            _options_str  += '<option value="中山路">中山路</option>';
+            _options_str  += '<option value="中山高速公路(國1)">中山高速公路(國1)</option>';
+            _options_str  += '<option value="中工三路">中工三路</option>';
+            _options_str  += '<option value="中平路">中平路</option>';
+            _options_str  += '<option value="中清西二街">中清西二街</option>';
+            _options_str  += '<option value="中清路一段">中清路一段</option>';
+            _options_str  += '<option value="中清路二段">中清路二段</option>';
+            _options_str  += '<option value="中科路">中科路</option>';
+            _options_str  += '<option value="中美街">中美街</option>';
+            _options_str  += '<option value="中興街">中興街</option>';
+            _options_str  += '<option value="中華西街">中華西街</option>';
+            _options_str  += '<option value="中華路一段">中華路一段</option>';
+            _options_str  += '<option value="中華路二段">中華路二段</option>';
+            _options_str  += '<option value="九龍街">九龍街</option>';
+            _options_str  += '<option value="五常街">五常街</option>';
+            _options_str  += '<option value="五權一街">五權一街</option>';
+            _options_str  += '<option value="五權七街">五權七街</option>';
+            _options_str  += '<option value="五權五街">五權五街</option>';
+            _options_str  += '<option value="五權南路">五權南路</option>';
+            _options_str  += '<option value="五權西五街">五權西五街</option>';
+            _options_str  += '<option value="五權西路一段">五權西路一段</option>';
+            _options_str  += '<option value="五權西路二段">五權西路二段</option>';
+            _options_str  += '<option value="五權路">五權路</option>';
+            _options_str  += '<option value="五義街">五義街</option>';
+            _options_str  += '<option value="五順街">五順街</option>';
+            _options_str  += '<option value="仁和路">仁和路</option>';
+            _options_str  += '<option value="何厝街">何厝街</option>';
+            _options_str  += '<option value="信義街">信義街</option>';
+            _options_str  += '<option value="健行路">健行路</option>';
+            _options_str  += '<option value="僑大三街">僑大三街</option>';
+            _options_str  += '<option value="僑大路">僑大路</option>';
+            _options_str  += '<option value="光大街">光大街</option>';
+            _options_str  += '<option value="光復路">光復路</option>';
+            _options_str  += '<option value="公園路">公園路</option>';
+            _options_str  += '<option value="公正路">公正路</option>';
+            _options_str  += '<option value="公益路">公益路</option>';
+            _options_str  += '<option value="公益路二段">公益路二段</option>';
+            _options_str  += '<option value="公館柳橋">公館柳橋</option>';
+            _options_str  += '<option value="公館路">公館路</option>';
+            _options_str  += '<option value="六順路">六順路</option>';
+            _options_str  += '<option value="凱旋路">凱旋路</option>';
+            _options_str  += '<option value="力行路">力行路</option>';
+            _options_str  += '<option value="北屯路">北屯路</option>';
+            _options_str  += '<option value="北平二街">北平二街</option>';
+            _options_str  += '<option value="北平路一段">北平路一段</option>';
+            _options_str  += '<option value="北平路三段">北平路三段</option>';
+            _options_str  += '<option value="北平路二段">北平路二段</option>';
+            _options_str  += '<option value="北平路四段">北平路四段</option>';
+            _options_str  += '<option value="北興街">北興街</option>';
+            _options_str  += '<option value="十甲東路">十甲東路</option>';
+            _options_str  += '<option value="十甲路">十甲路</option>';
+            _options_str  += '<option value="南京東路一段">南京東路一段</option>';
+            _options_str  += '<option value="南京東路三段">南京東路三段</option>';
+            _options_str  += '<option value="南京路">南京路</option>';
+            _options_str  += '<option value="南和一街">南和一街</option>';
+            _options_str  += '<option value="南屯交流道">南屯交流道</option>';
+            _options_str  += '<option value="南屯路一段">南屯路一段</option>';
+            _options_str  += '<option value="南屯路二段">南屯路二段</option>';
+            _options_str  += '<option value="南平路">南平路</option>';
+            _options_str  += '<option value="南興路">南興路</option>';
+            _options_str  += '<option value="南門路">南門路</option>';
+            _options_str  += '<option value="博館三街">博館三街</option>';
+            _options_str  += '<option value="博館二街">博館二街</option>';
+            _options_str  += '<option value="博館路">博館路</option>';
+            _options_str  += '<option value="台中路">台中路</option>';
+            _options_str  += '<option value="向上北路">向上北路</option>';
+            _options_str  += '<option value="向上南路一段">向上南路一段</option>';
+            _options_str  += '<option value="向上橋">向上橋</option>';
+            _options_str  += '<option value="向上路一段">向上路一段</option>';
+            _options_str  += '<option value="向上路三段">向上路三段</option>';
+            _options_str  += '<option value="向上路二段">向上路二段</option>';
+            _options_str  += '<option value="向上路五段">向上路五段</option>';
+            _options_str  += '<option value="向上路四段">向上路四段</option>';
+            _options_str  += '<option value="和平街">和平街</option>';
+            _options_str  += '<option value="四平路">四平路</option>';
+            _options_str  += '<option value="四維街">四維街</option>';
+            _options_str  += '<option value="國光路">國光路</option>';
+            _options_str  += '<option value="國安一路">國安一路</option>';
+            _options_str  += '<option value="國泰街">國泰街</option>';
+            _options_str  += '<option value="國際街">國際街</option>';
+            _options_str  += '<option value="大勇街">大勇街</option>';
+            _options_str  += '<option value="大墩七街">大墩七街</option>';
+            _options_str  += '<option value="大墩六街">大墩六街</option>';
+            _options_str  += '<option value="大墩十一街">大墩十一街</option>';
+            _options_str  += '<option value="大墩十七街">大墩十七街</option>';
+            _options_str  += '<option value="大墩十街">大墩十街</option>';
+            _options_str  += '<option value="大墩南路">大墩南路</option>';
+            _options_str  += '<option value="大墩路">大墩路</option>';
+            _options_str  += '<option value="大德街">大德街</option>';
+            _options_str  += '<option value="大忠南街">大忠南街</option>';
+            _options_str  += '<option value="大忠街">大忠街</option>';
+            _options_str  += '<option value="大昌街">大昌街</option>';
+            _options_str  += '<option value="大智北路">大智北路</option>';
+            _options_str  += '<option value="大智路">大智路</option>';
+            _options_str  += '<option value="大業路">大業路</option>';
+            _options_str  += '<option value="大誠街">大誠街</option>';
+            _options_str  += '<option value="大連西路">大連西路</option>';
+            _options_str  += '<option value="大連路一段">大連路一段</option>';
+            _options_str  += '<option value="大連路三段">大連路三段</option>';
+            _options_str  += '<option value="大連路二段">大連路二段</option>';
+            _options_str  += '<option value="大進街">大進街</option>';
+            _options_str  += '<option value="大隆路">大隆路</option>';
+            _options_str  += '<option value="大鵬路">大鵬路</option>';
+            _options_str  += '<option value="天佑街">天佑街</option>';
+            _options_str  += '<option value="天津路一段">天津路一段</option>';
+            _options_str  += '<option value="天津路三段">天津路三段</option>';
+            _options_str  += '<option value="天津路二段">天津路二段</option>';
+            _options_str  += '<option value="天津路四段">天津路四段</option>';
+            _options_str  += '<option value="天祥街">天祥街</option>';
+            _options_str  += '<option value="太原北路">太原北路</option>';
+            _options_str  += '<option value="太原路一段">太原路一段</option>';
+            _options_str  += '<option value="太原路三段">太原路三段</option>';
+            _options_str  += '<option value="太原路二段">太原路二段</option>';
+            _options_str  += '<option value="太平路">太平路</option>';
+            _options_str  += '<option value="存中街">存中街</option>';
+            _options_str  += '<option value="學士路">學士路</option>';
+            _options_str  += '<option value="學府路">學府路</option>';
+            _options_str  += '<option value="安和路">安和路</option>';
+            _options_str  += '<option value="安林路">安林路</option>';
+            _options_str  += '<option value="安順東一街">安順東一街</option>';
+            _options_str  += '<option value="寶慶街">寶慶街</option>';
+            _options_str  += '<option value="尊賢街">尊賢街</option>';
+            _options_str  += '<option value="山西路一段">山西路一段</option>';
+            _options_str  += '<option value="山西路二段">山西路二段</option>';
+            _options_str  += '<option value="崇德九路">崇德九路</option>';
+            _options_str  += '<option value="崇德二路一段">崇德二路一段</option>';
+            _options_str  += '<option value="崇德二路二段">崇德二路二段</option>';
+            _options_str  += '<option value="崇德八路一段">崇德八路一段</option>';
+            _options_str  += '<option value="崇德六路">崇德六路</option>';
+            _options_str  += '<option value="崇德十路一段">崇德十路一段</option>';
+            _options_str  += '<option value="崇德路一段">崇德路一段</option>';
+            _options_str  += '<option value="崇德路三段">崇德路三段</option>';
+            _options_str  += '<option value="崇德路二段">崇德路二段</option>';
+            _options_str  += '<option value="嶺東路">嶺東路</option>';
+            _options_str  += '<option value="工學二街">工學二街</option>';
+            _options_str  += '<option value="工學六街">工學六街</option>';
+            _options_str  += '<option value="工學路">工學路</option>';
+            _options_str  += '<option value="工業區一路">工業區一路</option>';
+            _options_str  += '<option value="工業區三十八路">工業區三十八路</option>';
+            _options_str  += '<option value="工業區五路">工業區五路</option>';
+            _options_str  += '<option value="市府路">市府路</option>';
+            _options_str  += '<option value="市政北七路">市政北七路</option>';
+            _options_str  += '<option value="市政北二路">市政北二路</option>';
+            _options_str  += '<option value="市政北六路">市政北六路</option>';
+            _options_str  += '<option value="市政南一路">市政南一路</option>';
+            _options_str  += '<option value="平等街">平等街</option>';
+            _options_str  += '<option value="府後街">府後街</option>';
+            _options_str  += '<option value="康樂街">康樂街</option>';
+            _options_str  += '<option value="廣福路">廣福路</option>';
+            _options_str  += '<option value="建中街">建中街</option>';
+            _options_str  += '<option value="建國北路一段">建國北路一段</option>';
+            _options_str  += '<option value="建國北路三段">建國北路三段</option>';
+            _options_str  += '<option value="建國北路二段">建國北路二段</option>';
+            _options_str  += '<option value="建國南路一段">建國南路一段</option>';
+            _options_str  += '<option value="建國南路二段">建國南路二段</option>';
+            _options_str  += '<option value="建國路">建國路</option>';
+            _options_str  += '<option value="建成路">建成路</option>';
+            _options_str  += '<option value="弘孝路">弘孝路</option>';
+            _options_str  += '<option value="復興北路">復興北路</option>';
+            _options_str  += '<option value="復興東一街">復興東一街</option>';
+            _options_str  += '<option value="復興東路">復興東路</option>';
+            _options_str  += '<option value="復興路一段">復興路一段</option>';
+            _options_str  += '<option value="復興路三段">復興路三段</option>';
+            _options_str  += '<option value="復興路二段">復興路二段</option>';
+            _options_str  += '<option value="復興路五段">復興路五段</option>';
+            _options_str  += '<option value="復興路四段">復興路四段</option>';
+            _options_str  += '<option value="德化街">德化街</option>';
+            _options_str  += '<option value="忠勇路">忠勇路</option>';
+            _options_str  += '<option value="忠勤街">忠勤街</option>';
+            _options_str  += '<option value="忠孝路">忠孝路</option>';
+            _options_str  += '<option value="忠明七街">忠明七街</option>';
+            _options_str  += '<option value="忠明八街">忠明八街</option>';
+            _options_str  += '<option value="忠明南路">忠明南路</option>';
+            _options_str  += '<option value="忠明路">忠明路</option>';
+            _options_str  += '<option value="忠誠街">忠誠街</option>';
+            _options_str  += '<option value="惠中路">惠中路</option>';
+            _options_str  += '<option value="惠中路一段">惠中路一段</option>';
+            _options_str  += '<option value="惠中路二段">惠中路二段</option>';
+            _options_str  += '<option value="惠來路三段">惠來路三段</option>';
+            _options_str  += '<option value="惠來路二段">惠來路二段</option>';
+            _options_str  += '<option value="惠文路">惠文路</option>';
+            _options_str  += '<option value="成功路">成功路</option>';
+            _options_str  += '<option value="振興路">振興路</option>';
+            _options_str  += '<option value="敦化路一段">敦化路一段</option>';
+            _options_str  += '<option value="敦化路二段">敦化路二段</option>';
+            _options_str  += '<option value="文心南七路">文心南七路</option>';
+            _options_str  += '<option value="文心南五路一段">文心南五路一段</option>';
+            _options_str  += '<option value="文心南路">文心南路</option>';
+            _options_str  += '<option value="文心路一段">文心路一段</option>';
+            _options_str  += '<option value="文心路三段">文心路三段</option>';
+            _options_str  += '<option value="文心路二段">文心路二段</option>';
+            _options_str  += '<option value="文心路四段">文心路四段</option>';
+            _options_str  += '<option value="文華路">文華路</option>';
+            _options_str  += '<option value="旅順路一段">旅順路一段</option>';
+            _options_str  += '<option value="日興街">日興街</option>';
+            _options_str  += '<option value="旱溪東路一段">旱溪東路一段</option>';
+            _options_str  += '<option value="旱溪東路三段">旱溪東路三段</option>';
+            _options_str  += '<option value="旱溪聖母橋">旱溪聖母橋</option>';
+            _options_str  += '<option value="旱溪街">旱溪街</option>';
+            _options_str  += '<option value="旱溪西路一段">旱溪西路一段</option>';
+            _options_str  += '<option value="旱溪西路三段">旱溪西路三段</option>';
+            _options_str  += '<option value="旱溪西路二段">旱溪西路二段</option>';
+            _options_str  += '<option value="旱溪西路四段">旱溪西路四段</option>';
+            _options_str  += '<option value="昇平街">昇平街</option>';
+            _options_str  += '<option value="昌平路一段">昌平路一段</option>';
+            _options_str  += '<option value="昌平路二段">昌平路二段</option>';
+            _options_str  += '<option value="明義街">明義街</option>';
+            _options_str  += '<option value="月眉西路">月眉西路</option>';
+            _options_str  += '<option value="朝富一街">朝富一街</option>';
+            _options_str  += '<option value="朝富路">朝富路</option>';
+            _options_str  += '<option value="朝馬路">朝馬路</option>';
+            _options_str  += '<option value="東光路">東光路</option>';
+            _options_str  += '<option value="東大路一段">東大路一段</option>';
+            _options_str  += '<option value="東山路一段">東山路一段</option>';
+            _options_str  += '<option value="東山路二段">東山路二段</option>';
+            _options_str  += '<option value="東興路一段">東興路一段</option>';
+            _options_str  += '<option value="東興路三段">東興路三段</option>';
+            _options_str  += '<option value="東興路二段">東興路二段</option>';
+            _options_str  += '<option value="東英七街">東英七街</option>';
+            _options_str  += '<option value="東英路">東英路</option>';
+            _options_str  += '<option value="東西向快速公路(台74)">東西向快速公路(台74)</option>';
+            _options_str  += '<option value="東門路">東門路</option>';
+            _options_str  += '<option value="松竹路一段">松竹路一段</option>';
+            _options_str  += '<option value="松竹路三段">松竹路三段</option>';
+            _options_str  += '<option value="松竹路二段">松竹路二段</option>';
+            _options_str  += '<option value="林森路">林森路</option>';
+            _options_str  += '<option value="柳川東路三段">柳川東路三段</option>';
+            _options_str  += '<option value="柳川東路二段">柳川東路二段</option>';
+            _options_str  += '<option value="柳川東路四段">柳川東路四段</option>';
+            _options_str  += '<option value="柳川西路一段">柳川西路一段</option>';
+            _options_str  += '<option value="柳川西路三段">柳川西路三段</option>';
+            _options_str  += '<option value="柳川西路二段">柳川西路二段</option>';
+            _options_str  += '<option value="柳川西路四段">柳川西路四段</option>';
+            _options_str  += '<option value="梅亭東街">梅亭東街</option>';
+            _options_str  += '<option value="梅亭街">梅亭街</option>';
+            _options_str  += '<option value="梅川東路一段">梅川東路一段</option>';
+            _options_str  += '<option value="梅川東路三段">梅川東路三段</option>';
+            _options_str  += '<option value="梅川東路五段">梅川東路五段</option>';
+            _options_str  += '<option value="梅川西路一段">梅川西路一段</option>';
+            _options_str  += '<option value="梅川西路三段">梅川西路三段</option>';
+            _options_str  += '<option value="榮華街">榮華街</option>';
+            _options_str  += '<option value="樂業二路">樂業二路</option>';
+            _options_str  += '<option value="樂業路">樂業路</option>';
+            _options_str  += '<option value="樂群街">樂群街</option>';
+            _options_str  += '<option value="模範街">模範街</option>';
+            _options_str  += '<option value="櫻花路">櫻花路</option>';
+            _options_str  += '<option value="正福街">正福街</option>';
+            _options_str  += '<option value="正義街">正義街</option>';
+            _options_str  += '<option value="武昌路">武昌路</option>';
+            _options_str  += '<option value="武漢街">武漢街</option>';
+            _options_str  += '<option value="民族路">民族路</option>';
+            _options_str  += '<option value="民權路">民權路</option>';
+            _options_str  += '<option value="民生北路">民生北路</option>';
+            _options_str  += '<option value="民生路">民生路</option>';
+            _options_str  += '<option value="水湳路">水湳路</option>';
+            _options_str  += '<option value="永春北路">永春北路</option>';
+            _options_str  += '<option value="永春南路">永春南路</option>';
+            _options_str  += '<option value="永春路">永春路</option>';
+            _options_str  += '<option value="永興街">永興街</option>';
+            _options_str  += '<option value="河北路二段">河北路二段</option>';
+            _options_str  += '<option value="河南路">河南路</option>';
+            _options_str  += '<option value="河南路三段">河南路三段</option>';
+            _options_str  += '<option value="河南路二段">河南路二段</option>';
+            _options_str  += '<option value="洛陽路">洛陽路</option>';
+            _options_str  += '<option value="漢口路一段">漢口路一段</option>';
+            _options_str  += '<option value="漢口路三段">漢口路三段</option>';
+            _options_str  += '<option value="漢口路二段">漢口路二段</option>';
+            _options_str  += '<option value="漢口路五段">漢口路五段</option>';
+            _options_str  += '<option value="漢口路四段">漢口路四段</option>';
+            _options_str  += '<option value="漢口麻園橋">漢口麻園橋</option>';
+            _options_str  += '<option value="漢翔路">漢翔路</option>';
+            _options_str  += '<option value="漢陽街">漢陽街</option>';
+            _options_str  += '<option value="瀋陽路三段">瀋陽路三段</option>';
+            _options_str  += '<option value="瀋陽路二段">瀋陽路二段</option>';
+            _options_str  += '<option value="無名路">無名路</option>';
+            _options_str  += '<option value="熱河路二段">熱河路二段</option>';
+            _options_str  += '<option value="玉門路">玉門路</option>';
+            _options_str  += '<option value="環中東路一段">環中東路一段</option>';
+            _options_str  += '<option value="環中東路三段">環中東路三段</option>';
+            _options_str  += '<option value="環中東路二段">環中東路二段</option>';
+            _options_str  += '<option value="環中東路五段">環中東路五段</option>';
+            _options_str  += '<option value="環中東路四段">環中東路四段</option>';
+            _options_str  += '<option value="環中路一段">環中路一段</option>';
+            _options_str  += '<option value="環中路三段">環中路三段</option>';
+            _options_str  += '<option value="環中路二段">環中路二段</option>';
+            _options_str  += '<option value="環中路四段">環中路四段</option>';
+            _options_str  += '<option value="甘肅路一段">甘肅路一段</option>';
+            _options_str  += '<option value="甘肅路二段">甘肅路二段</option>';
+            _options_str  += '<option value="福人街">福人街</option>';
+            _options_str  += '<option value="福元街">福元街</option>';
+            _options_str  += '<option value="福康路">福康路</option>';
+            _options_str  += '<option value="福成街">福成街</option>';
+            _options_str  += '<option value="福星北路">福星北路</option>';
+            _options_str  += '<option value="福星路">福星路</option>';
+            _options_str  += '<option value="福林路">福林路</option>';
+            _options_str  += '<option value="福科路">福科路</option>';
+            _options_str  += '<option value="福雅路">福雅路</option>';
+            _options_str  += '<option value="福音街">福音街</option>';
+            _options_str  += '<option value="福順路">福順路</option>';
+            _options_str  += '<option value="福龍街">福龍街</option>';
+            _options_str  += '<option value="筏子東街一段">筏子東街一段</option>';
+            _options_str  += '<option value="筏子東街二段">筏子東街二段</option>';
+            _options_str  += '<option value="篤信街">篤信街</option>';
+            _options_str  += '<option value="篤行路">篤行路</option>';
+            _options_str  += '<option value="精忠街">精忠街</option>';
+            _options_str  += '<option value="精武東路">精武東路</option>';
+            _options_str  += '<option value="精武路">精武路</option>';
+            _options_str  += '<option value="精科五路">精科五路</option>';
+            _options_str  += '<option value="精美街">精美街</option>';
+            _options_str  += '<option value="精誠七街">精誠七街</option>';
+            _options_str  += '<option value="精誠十九街">精誠十九街</option>';
+            _options_str  += '<option value="精誠十二街">精誠十二街</option>';
+            _options_str  += '<option value="精誠路">精誠路</option>';
+            _options_str  += '<option value="綏遠路一段">綏遠路一段</option>';
+            _options_str  += '<option value="綏遠路二段">綏遠路二段</option>';
+            _options_str  += '<option value="經貿九路">經貿九路</option>';
+            _options_str  += '<option value="經貿路二段">經貿路二段</option>';
+            _options_str  += '<option value="綠川西街">綠川西街</option>';
+            _options_str  += '<option value="繼光街">繼光街</option>';
+            _options_str  += '<option value="美德街">美德街</option>';
+            _options_str  += '<option value="美村南路">美村南路</option>';
+            _options_str  += '<option value="美村路一段">美村路一段</option>';
+            _options_str  += '<option value="美村路二段">美村路二段</option>';
+            _options_str  += '<option value="育德路">育德路</option>';
+            _options_str  += '<option value="育才北路">育才北路</option>';
+            _options_str  += '<option value="育才南街">育才南街</option>';
+            _options_str  += '<option value="育才街">育才街</option>';
+            _options_str  += '<option value="自由三街">自由三街</option>';
+            _options_str  += '<option value="自由路一段">自由路一段</option>';
+            _options_str  += '<option value="自由路三段">自由路三段</option>';
+            _options_str  += '<option value="自由路二段">自由路二段</option>';
+            _options_str  += '<option value="自由路四段">自由路四段</option>';
+            _options_str  += '<option value="自立街">自立街</option>';
+            _options_str  += '<option value="臺中捷運紅線">臺中捷運紅線</option>';
+            _options_str  += '<option value="臺灣大道一段">臺灣大道一段</option>';
+            _options_str  += '<option value="臺灣大道三段">臺灣大道三段</option>';
+            _options_str  += '<option value="臺灣大道二段">臺灣大道二段</option>';
+            _options_str  += '<option value="臺灣大道四段">臺灣大道四段</option>';
+            _options_str  += '<option value="興中街">興中街</option>';
+            _options_str  += '<option value="興大路">興大路</option>';
+            _options_str  += '<option value="興安路一段">興安路一段</option>';
+            _options_str  += '<option value="興民街">興民街</option>';
+            _options_str  += '<option value="興進路">興進路</option>';
+            _options_str  += '<option value="英士路">英士路</option>';
+            _options_str  += '<option value="英才路">英才路</option>';
+            _options_str  += '<option value="華富街">華富街</option>';
+            _options_str  += '<option value="華美街">華美街</option>';
+            _options_str  += '<option value="華美街二段">華美街二段</option>';
+            _options_str  += '<option value="華美西街一段">華美西街一段</option>';
+            _options_str  += '<option value="華美西街二段">華美西街二段</option>';
+            _options_str  += '<option value="華興街">華興街</option>';
+            _options_str  += '<option value="萬和路一段">萬和路一段</option>';
+            _options_str  += '<option value="萬和路二段">萬和路二段</option>';
+            _options_str  += '<option value="衛道路">衛道路</option>';
+            _options_str  += '<option value="西墩北巷">西墩北巷</option>';
+            _options_str  += '<option value="西屯路一段">西屯路一段</option>';
+            _options_str  += '<option value="西屯路一號橋">西屯路一號橋</option>';
+            _options_str  += '<option value="西屯路三段">西屯路三段</option>';
+            _options_str  += '<option value="西屯路二段">西屯路二段</option>';
+            _options_str  += '<option value="西川一路">西川一路</option>';
+            _options_str  += '<option value="豐樂路">豐樂路</option>';
+            _options_str  += '<option value="貴和街">貴和街</option>';
+            _options_str  += '<option value="軍功路一段">軍功路一段</option>';
+            _options_str  += '<option value="軍功路二段">軍功路二段</option>';
+            _options_str  += '<option value="軍福十三路">軍福十三路</option>';
+            _options_str  += '<option value="軍福十六路">軍福十六路</option>';
+            _options_str  += '<option value="逢大路">逢大路</option>';
+            _options_str  += '<option value="逢甲路">逢甲路</option>';
+            _options_str  += '<option value="進化北路">進化北路</option>';
+            _options_str  += '<option value="進化路">進化路</option>';
+            _options_str  += '<option value="進德一街">進德一街</option>';
+            _options_str  += '<option value="進德北路">進德北路</option>';
+            _options_str  += '<option value="進德路">進德路</option>';
+            _options_str  += '<option value="金龍街">金龍街</option>';
+            _options_str  += '<option value="錦中街">錦中街</option>';
+            _options_str  += '<option value="錦南街">錦南街</option>';
+            _options_str  += '<option value="錦新街">錦新街</option>';
+            _options_str  += '<option value="錦祥街">錦祥街</option>';
+            _options_str  += '<option value="長安路二段">長安路二段</option>';
+            _options_str  += '<option value="長春街">長春街</option>';
+            _options_str  += '<option value="防汛道路">防汛道路</option>';
+            _options_str  += '<option value="陝西麻園橋">陝西麻園橋</option>';
+            _options_str  += '<option value="雙十路一段">雙十路一段</option>';
+            _options_str  += '<option value="雙十路二段">雙十路二段</option>';
+            _options_str  += '<option value="電台街">電台街</option>';
+            _options_str  += '<option value="青島路四段">青島路四段</option>';
+            _options_str  += '<option value="青海南街">青海南街</option>';
+            _options_str  += '<option value="青海路一段">青海路一段</option>';
+            _options_str  += '<option value="青海路二段">青海路二段</option>';
+            _options_str  += '<option value="館前路">館前路</option>';
+            _options_str  += '<option value="高工路">高工路</option>';
+            _options_str  += '<option value="黎明路一段">黎明路一段</option>';
+            _options_str  += '<option value="黎明路三段">黎明路三段</option>';
+            _options_str  += '<option value="黎明路二段">黎明路二段</option>';
+            _options_str  += '<option value="龍富路四段">龍富路四段</option>';
+            sel_.innerHTML = _options_str;
+            div_.appendChild(sel_);
+            var lab_ = document.createElement('div');
+            lab_.innerHTML = '路名';
+            lab_.className = 'filterlabel';
+            div_.appendChild(lab_);
+            var reset_ = document.createElement('div');
+            reset_.innerHTML = 'clear filter';
+            reset_.className = 'filterlabel';
+            reset_.onclick = function() {
+                var options = document.getElementById("sel_").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_.appendChild(reset_);
+        </script>
+    </body>
+</html>
